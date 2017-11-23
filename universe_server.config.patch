@@ -1,22 +1,8 @@
 [
+
 	{
-		"op" : "replace",
-		"path" : "/defaultWorldCoordinate",
-		"value" : "38_-9_-29579654_3"
-	},
-	{
-		"op": "replace",
-		"path": "/clientAssetsMismatchMessage",
-		"value": "Для входа на сервер откройте настройки и поставьте галочку напротив \"Allow Asset Mismatch\""
-	},
-	{
-		"op": "add",
-		"path": "/commandProcessorScripts/-",
-		"value": "/scripts/serverGames.lua"
-    },
-	{
-		"op": "replace",
-		"path": "/workerPoolThreads",
-		"value": 4
-	}
+	  "op": "add",
+	  "path": "/commandProcessorScripts/-",
+	  "value": "/scripts/serverGames.lua"
+    	}
 ]
