@@ -46,12 +46,12 @@ function durakInit(t, id, playerList, config)
   notifyTurns(durakTables[t].players, durakTables[t].playerTurn)
 end
 
-local function notifyTurns(players, playerIndex)
+function notifyTurns(players, playerIndex)
   universe.adminWhisper(players[playerIndex].id, "It's your turn!")
   universe.adminWhisper(players[playerIndex % #players + 1].id, "Prepare for defending yourself!")
 end
 
-local function shuffle(tbl)
+function shuffle(tbl)
   size = #tbl
   for i = size, 1, -1 do
     local rand = math.random(size)
@@ -60,7 +60,7 @@ local function shuffle(tbl)
   return tbl
 end
 
-local function generateDeck()
+function generateDeck()
   deck = {}
   for _, r in ipairs(ranks) do
     for _, s in ipairs(suits) do
@@ -70,7 +70,7 @@ local function generateDeck()
   return shuffle(deck)
 end
 
-local function dealCards(deck, players, pIndex)
+function dealCards(deck, players, pIndex)
   for i = pIndex, 1, -1 do
     while #(players[i].cards) < 6 and #deck > 0 do
       local card = table.remove(deck)
@@ -88,28 +88,11 @@ local function dealCards(deck, players, pIndex)
   return deck, players
 end
 
---[[function durak(id, args)
-  if #args < 1 then return "/durak command [arguments]" end
-  
-  local command = table.remove(args, 1)
-  local playerNick = universe.clientNick(id)
-  local player = {id = id, nick = playerNick}
-  
-  local t, p = getPlayerTable(player, durakTables)
-  
-  if t == 0 then 
-    return "You are not playing durak!"
-  elseif not valueExists(durakCommands, command) then 
-    return "Command " .. command .. " is not found" 
-  else
-    return durakFunctions[command](id, t, p, args)
-  end
-end
-]]--
+
 function durak_cards(id, t, p, args)
   local message = "Your current cards:\n"
-  for _, c in ipairs(durakTables[t].players[p].cards) do
-    message = message .. cardToText(c) .. " "
+  for i, c in ipairs(durakTables[t].players[p].cards) do
+    message = message .. "^gray;" .. i .. ": " .. cardToText(c) .. " "
   end
   return message
 end
@@ -131,7 +114,7 @@ function durak_done(id, t, p, args)
 	return ""
 end
 
-local function nextRound(t, p, skip)
+function nextRound(t, p, skip)
   local game = durakTables[t]
   local nextPlayer = game.playerTurn % #(game.players) + 1
   
@@ -244,7 +227,7 @@ function durak_table(id, t, p, args)
     local dCard = v.defendCard
     
     if aCard ~= nil then
-      message = message .. "\n" .. cardToText(aCard)
+      message = message .. "\n^gray;" .. k .. ": " .. cardToText(aCard)
     end
     
     if dCard ~= nil then
@@ -291,7 +274,7 @@ function durak_throw(id, t, p, args)
   return "End"
 end
 
-local function checkTable(card, tableCards)
+function checkTable(card, tableCards)
   if tableCards == nil or #tableCards == 0 then return false end
   for _,v in ipairs(tableCards) do
     if (v.attackCard and v.attackCard.rank == card.rank) or (v.defendCard and v.defendCard.rank == card.rank) then
@@ -301,7 +284,7 @@ local function checkTable(card, tableCards)
   return false
 end
 
-local function isBeatable(attackCard, defendCard, trump)
+function isBeatable(attackCard, defendCard, trump)
   if attackCard.suit == trump.suit then
     return defendCard.suit == trump.suit and inverted_ranks[defendCard.rank] > inverted_ranks[attackCard.rank]
   else
@@ -309,7 +292,7 @@ local function isBeatable(attackCard, defendCard, trump)
   end
 end
 
-local function cardToText(card)
+function cardToText(card)
   return card.suit .. card.rank .. "^reset;"
 end
 
