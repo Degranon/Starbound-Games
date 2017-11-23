@@ -37,7 +37,7 @@ function durakInit(t, id, playerList, config)
   
   -- Tell the commands, show the cards
   for i, player in ipairs(playerList) do
-    universe.adminWhisper(player.id, "Available commands: \n/durak game cards - showing you current cards \n...TODO")
+    universe.adminWhisper(player.id, "Type /commands to see available commands")
     universe.adminWhisper(player.id, "Trump now is " .. cardToText(trump))
     universe.adminWhisper(player.id, durak_cards(player.id, t, i, {}))
   end
