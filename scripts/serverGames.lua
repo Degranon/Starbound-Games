@@ -3,16 +3,16 @@ require "/scripts/gamesUtil.lua"
 
 
 local activeTables = {}
-local availableGames = {"durak"}
+local availableGames = {"durak", "blackjack"}
 local commands = {}
 
 function init()
   math.randomseed(os.time())
     self.configs = {}
   -- require globally
-  for i = 1, #availableGames do
-    require ("/scripts/gamesScripts/" .. availableGames[i] .. ".lua")
-    self.configs[availableGames[i]] = root.assetJson("/scripts/gamesScripts/"..availableGames[i]..".config")
+  for _, name in ipairs(availableGames) do
+    require ("/scripts/gamesScripts/" .. name .. ".lua")
+    self.configs[name] = root.assetJson("/scripts/gamesScripts/"..name..".config")
   end
 end
 
@@ -27,10 +27,10 @@ function command(name, id, args)
     local t, p = getPlayerTable(player, activeTables)
 	
     if t ~= 0 then
-	  local cfg = self.configs[availableGames[t]]
 	  local gameType = activeTables[t].game
+	  local cfg = self.configs[gameType]
 	  local cmd = gameType .. "_" .. name
-	  
+	  sb.logInfo("%s", cfg)
 	  if cfg.commands[name] and type(_ENV[cmd]) == "function" and _ENV[cmd] then
         return (_ENV[cmd])(id, t, p, args)
       else

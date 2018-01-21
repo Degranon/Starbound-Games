@@ -3,10 +3,6 @@ require "/scripts/gamesUtil.lua"
 -- Durak functions
 
 durakTables = {}
-local durak = {}
-local ranks = {"6", "7", "8", "9", "10", "J", "Q", "K", "A"}
-local inverted_ranks = {["6"] = 1, ["7"] = 2, ["8"] = 3, ["9"] = 4, ["10"] = 5, ["J"] = 6, ["Q"] = 7, ["K"] = 8, ["A"] = 9}
-local suits = {"^orange;ª", "^red;«", "^cyan;§", "^darkgreen;°"}
 
 function durakInit(t, id, playerList, config)
   math.randomseed(os.time())
@@ -16,7 +12,7 @@ function durakInit(t, id, playerList, config)
   durakCommands = config.commands
   
   -- Generating the deck
-  cardDeck = generateDeck()
+  cardDeck = generateDeck(_36_ranks)
   
   -- Shuffling the order
   playerList = shuffle(playerList)
@@ -27,7 +23,7 @@ function durakInit(t, id, playerList, config)
   end
   
   -- Dealing the cards
-  deck, playerList = dealCards(deck, playerList, 1)
+  deck, playerList = dealCards(deck, playerList, 1, 6)
   
   -- Retrieving the trump suit
   trump = deck[1]
@@ -60,35 +56,6 @@ function shuffle(tbl)
   return tbl
 end
 
-function generateDeck()
-  deck = {}
-  for _, r in ipairs(ranks) do
-    for _, s in ipairs(suits) do
-      table.insert(deck, {suit = s, rank = r})
-    end
-  end
-  return shuffle(deck)
-end
-
-function dealCards(deck, players, pIndex)
-  for i = pIndex, 1, -1 do
-    while #(players[i].cards) < 6 and #deck > 0 do
-      local card = table.remove(deck)
-      table.insert(players[i].cards, card)
-    end
-  end
-  
-  for i = #players, pIndex + 1, -1 do
-    while #(players[i].cards) < 6 and #deck > 0 do
-      local card = table.remove(deck)
-      table.insert(players[i].cards, card)
-    end
-  end
-  
-  return deck, players
-end
-
-
 function durak_cards(id, t, p, args)
   local message = "Your current cards:\n"
   for i, c in ipairs(durakTables[t].players[p].cards) do
@@ -118,7 +85,7 @@ function nextRound(t, p, skip)
   local game = durakTables[t]
   local nextPlayer = game.playerTurn % #(game.players) + 1
   
-  game.deck, game.players = dealCards(game.deck, game.players, p)
+  game.deck, game.players = dealCards(game.deck, game.players, p, 6)
   
   if skip then nextPlayer = nextPlayer % #(game.players) + 1 end	
   game.playerTurn = nextPlayer
